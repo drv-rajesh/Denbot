@@ -3,6 +3,8 @@ Denbot is an all-purpose Discord bot I created for my server, Dhruv's Den (not c
 
 The code is currently being cleaned to support OOP to nest all the functions in "funcs.py".
 
+View the wiki: https://github.com/drv-rajesh/Denbot/wiki
+
 ---
 
 ## Usage
