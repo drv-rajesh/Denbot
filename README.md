@@ -9,6 +9,7 @@ Denbot is an all-purpose Discord bot I created for my server, Dhruv's Den (not c
 - [Contribute](#contribute)
 - [Wiki](#wiki)
 
+---
 ## The Creation Process
 This bot uses Flask and Python to host the server for free in the cloud, UptimeRobot to monitor said server, and the following APIs requested to perform various tasks such as checking the weather:
 
