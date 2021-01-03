@@ -8,7 +8,6 @@ def home():
   return """
   <title> Denbot Server </title>
   <h2> Server is up. (yay 😌) </h2>
-  <hr>
   <h4> About </h4>
   <ul>
     <li> ❓ - This is the server running the Discord '<i>Denbot</i>' by Dhruv Rajesh. </li>
@@ -18,7 +17,7 @@ def home():
     <li> 🌎 - Visit the Repl <a href="https://repl.it/@drvrajesh/Denbot"> here </a> </li>
   </ul>
   <hr>
-  <p> This server was created using Flask and HTML to bring you the content you are seeing right now. </p>
+  <p> This server was created using Flask and HTML. </p>
   """
 
 def run():
