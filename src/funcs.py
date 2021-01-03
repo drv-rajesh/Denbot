@@ -2,9 +2,23 @@ import os
 import requests
 import json
 import pytz
+import time
+import urllib.parse
 
 from datetime import datetime
 from random import randint
+
+def fetch_uptime():
+  return time.time()
+
+def fetch_activity():
+  activity = requests.get("https://www.boredapi.com/api/activity").json()
+
+  name = activity['activity']
+  cat = activity['type']
+  participants = activity['participants']
+
+  return name, cat, participants
 
 def fetch_quote():
   response = requests.get("https://zenquotes.io/api/random")
@@ -34,7 +48,37 @@ def fetch_colour():
   hexa = colour['colors'][0]['hex'].upper()
   name = colour['colors'][0]['tags'][0]['name'].upper()
 
-  return hexa, name 
+  return hexa, name
+
+def fetch_age(name):
+  age = requests.get(f"https://api.agify.io?name={name}").json()
+
+  return age['age']
+
+def fetch_sent(sentence):
+  headers = {'Accept': 'application/json', "Content-Type": "application/json"}
+  params = {"text": sentence}
+
+  analysis = requests.post("https://sentim-api.herokuapp.com/api/v1/", headers=headers, json=params).json()
+
+  return analysis['result']['type'], analysis['result']['polarity']
+
+
+def fetch_dict(word):
+  fetch = requests.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}").json()
+
+  word = fetch[0]['word']
+  phonetics = fetch[0]['phonetics'][0]['text']
+  part = fetch[0]['meanings'][0]['partOfSpeech']
+  definition = fetch[0]['meanings'][0]['definitions'][0]['definition']
+  example = fetch[0]['meanings'][0]['definitions'][0]['example']
+
+  return word, phonetics, part, definition, example
+
+def fetch_mathjs(expression):
+  fetch = requests.get(f"http://api.mathjs.org/v4/?expr={urllib.parse.quote(expression)}").json()
+
+  return fetch
 
 def fetch_tz(tz):
   now = datetime.now(pytz.timezone(tz)).strftime("%H:%M:%S")
@@ -74,3 +118,15 @@ def fetch_news(country):
   urls.append(fetch['articles'][0]['url'])
     
   return authors, titles, descs, urls
+
+def fetch_loc(city):
+  fetch = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={os.getenv('WEAKEY')}"
+  fetch = requests.get(fetch).json()
+
+  lat = fetch["coord"]["lat"]
+  long = fetch["coord"]["lon"]
+
+def fetch_short(url):
+  fetch = requests.post("https://cleanuri.com/api/v1/shorten", data={"url": url}).json()
+
+  return fetch['result_url']
