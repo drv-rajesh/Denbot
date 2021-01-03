@@ -4,8 +4,10 @@ Denbot is an all-purpose Discord bot I created for my server, Dhruv's Den (not c
 [Implement this bot in your server](https://discord.com/api/oauth2/authorize?client_id=791309974894149652&permissions=1074785345&scope=bot)
 
 ---
+## Table of Contents
+- [The Creation Process](#the-creation-process)
 
-# The Creation Process
+## The Creation Process
 This bot uses Flask and Python to host the server for free in the cloud, UptimeRobot to monitor said server, and the following APIs requested to perform various tasks such as checking the weather:
 
 | API            | Auth    | Implementation                                   | Link                              |
@@ -23,9 +25,9 @@ This bot uses Flask and Python to host the server for free in the cloud, UptimeR
 | NewsAPI        | API Key | Returns top headlines for a country.             | https://newsapi.org/              |
 | CleanURI       | None    | Shortens URLs.                                   | https://cleanuri.com/docs         |
 
-# Contribute
-Make a PR for a feature branch and we will try to implement it ASAP. 
+## Contribute
+Make a PR for a feature branch and I will try to implement it ASAP. 
 
-# Wiki
+## Wiki
 Go to the work-in-progress [wiki](https://github.com/drv-rajesh/Denbot/wiki) to learn more about the functions, commands, versions, deprecations, and more.
 
