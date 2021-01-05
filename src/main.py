@@ -25,8 +25,8 @@ async def on_ready():
 async def on_message(message):
   if message.author == client.user:
     return
-
-  if str(message.author) == "drvrajesh_#1307":
+  
+  if "hi denbot" in message.content.lower():
     await message.add_reaction("👋")
 
   if message.content.startswith('%echo'):
@@ -43,6 +43,7 @@ async def on_message(message):
 `%about`: Displays info about Denbot.
 `%commands`: Displays Denbot's commands.
 `%uptime params:🌓format`: Displays Denbot's uptime.
+    Example: %uptime hhmmss or %uptime
 `%ghub`: Displays Denbot's GitHub repository. ❗
 `%server`: Displays the server Denbot is running on. ❗
 
@@ -53,19 +54,28 @@ async def on_message(message):
 `%coin`: Flips a coin.
 `%dice`: Rolls a die.
 `%rng params:start,stop`: Gets a random number between `start` and `stop`, inclusive.
+    Example: %rng 1 10 or %rng 13323 2893282
 `%card`: Draws a card from a shuffled deck.
 `%colour`: Fetches a random colour.
 `%age params:name`: Predicts age based on name.
+    Example: %age Dhruv
 `%me`: Adds yourself to Denbot's database.
 `%sent params:sentence`: Perform sentiment analysis on a sentence.
+    Example: %sent good is bad or not""")
+
+    await message.author.send("""
 
 *Data (5)*
 `%time params:timezone`: Displays time for `timezone`.
+    Example: %time Canada/Eastern or %time Canada/Mountain
 `%weather params:city`: Displays weather for `city`.
+    Example: %weather Toronto or %weather Chandler
 `%weadet params:city`: Displays detailed weather for `city`.
+    Example: %weadet Toronto or %weadet Chandler
 `%news params:country`: Displays top headline for `country`.
+    Example: %news CA or %news US
 `%loc params:city`: Displays lat and long for `city`.
-
+    Example: %loc Toronto or %loc Chandler
 *Server (3)*
 `%count`: Returns member count.
 `%ls`: Lists all members.
@@ -73,12 +83,19 @@ async def on_message(message):
 
 *Tools and Utilities (6)*
 `%dict params:word`: Get the dictionary data on a word.
+    Example: %dict hello or %dict why
 `%short params:url`: Shortens a URL.
+    Example: %short https://google.ca
 `%eval params:expression`: Solve an expression. 🔨
+    Example: %eval 2+3
 `%encode params:string`: Encodes `string` in URL UTF-8 format.
+    Example: %encode 25sjf
 `%sizeof params:var`: Shows an object's memory consumption.
+    Example: %sizeof 5 or %sizeof efjisf
 `%bin params:string`: Converts an object to binary.
+    Example: %bin hello or %bin 510
     """)
+
     await message.channel.send(f"👋 {message.author.mention}! Check your DMs for a list of commands.")
 
   if message.content.startswith('%uptime'):
@@ -100,7 +117,7 @@ async def on_message(message):
     try:
       tz = message.content.lower().split(" ")[1]
       await message.channel.send(fetch_tz(tz))
-    except:
+    except IndexError:
       await message.channel.send('Please provide a valid `timezone` parameter.')
   
   if message.content.startswith('%weather'):
