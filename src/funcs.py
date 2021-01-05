@@ -3,9 +3,9 @@ import requests
 import json
 import pytz
 import time
+import datetime
 import urllib.parse
 
-from datetime import datetime
 from random import randint
 
 def fetch_uptime():
@@ -81,7 +81,7 @@ def fetch_mathjs(expression):
   return fetch
 
 def fetch_tz(tz):
-  now = datetime.now(pytz.timezone(tz)).strftime("%H:%M:%S")
+  now = datetime.datetime.now(pytz.timezone(tz)).strftime("%H:%M:%S")
   return now
 
 def fetch_weather(city):
