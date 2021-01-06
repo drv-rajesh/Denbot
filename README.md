@@ -14,7 +14,6 @@ This bot uses Flask and Python to host the server for free in the cloud and Upti
 #### Resources
 - [Modules/Libraries](/rmassets/modules.md)
 - [Useful Pages](/rmassets/useful.md)
-- [Useful Tutorials](/rmassets/tutorials.md)
 
 ## Contribute
 Make a PR for a feature branch and I will try to implement it ASAP. 
