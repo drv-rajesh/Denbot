@@ -4,15 +4,20 @@ import time
 import datetime
 import urllib.parse
 import sys
+import itertools
+import requests
+import pytz
 
 from keep import keep
 from random import randint
 from replit import db
+from csv import reader, writer
 
 from funcs import *
 
 #------------------------------------
 client = discord.Client()
+
 uptime = fetch_uptime()
 #------------------------------------
 
@@ -23,24 +28,66 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+
   if message.author == client.user:
     return
-  
-  if "hi denbot" in message.content.lower():
-    await message.add_reaction("👋")
 
+  #---------------------------------------
+
+  if "hi denbot" in message.content.lower():
+    x = randint(0, 1)
+
+    if x == 0:
+      await message.add_reaction("👋")
+      time.sleep(5)
+    elif x == 1:
+      await message.channel.send(f"Hi {message.author.mention}!")
+      time.sleep(5)
+  
+  if "denbot" in message.content.lower() and "hi denbot" not in message.content.lower():
+    await message.channel.send("I was mentioned. Is there anything I can help you with?")
+    time.sleep(5)
+
+  #---------------------------------------
+  #Commands
   if message.content.startswith('%echo'):
     await message.channel.send('Echoing back.')
-  
+    time.sleep(5)
+
   if message.content.startswith('%about'):
-    await message.channel.send('Denbot is a bot created by Dhruv Rajesh for all purpose use in his server, Dhruv\'s Den.')
-  
+    embed = discord.Embed(title="About Denbot", description="Denbot is a bot created by Dhruv Rajesh for use in his server, Dhruv\'s Den.", color=0xff7f50)
+    embed.add_field(name="Language Coded", value="Python", inline=True)
+    embed.add_field(name="Date Created", value="2020-12-23", inline=True)
+    embed.add_field(name="Number of Commands", value="31", inline=True)
+    embed.add_field(name="Favourite Colour", value="Coral (`FF7F50`)", inline=True)
+    embed.add_field(name="Favourite Food", value="Python", inline=True)
+    embed.add_field(name="Favourite Pet", value="Kawaii Cats :)", inline=True)
+    embed.set_footer(text=f"At {datetime.datetime.now(pytz.timezone('Canada/Eastern')).strftime('%H:%M:%S')} | From @Denbot#1463")
+    embed.set_thumbnail(url="https://raw.githubusercontent.com/drv-rajesh/drv-rajesh/main/logo.png")
+    await message.channel.send(embed = embed)
+    time.sleep(5)
+
+  if message.content.startswith('%stats'):
+    embed = discord.Embed(title="Denbot Statistics", color=0xff7f50)
+    embed.add_field(name="Active Shards", value="1", inline=True)
+    embed.add_field(name="Shard Seeked", value="False", inline=True)
+    embed.add_field(name="Rate Limited", value="False", inline=True)
+    embed.add_field(name="Active APIs", value="12/12", inline=True)
+    embed.add_field(name="Trashed APIs", value="0/0", inline=True)
+    embed.add_field(name="API Load Diff", value="1:7/10", inline=True)
+    embed.set_footer(text=f"At {datetime.datetime.now(pytz.timezone('Canada/Eastern')).strftime('%H:%M:%S')} | From @Denbot#1463")
+    embed.set_thumbnail(url="https://raw.githubusercontent.com/drv-rajesh/drv-rajesh/main/logo.png")
+    await message.channel.send(embed = embed)
+    time.sleep(5)
+
   if message.content.startswith('%commands'):
+
     await message.author.send("""
 **31 Currently Implemented Commands** (Emoji Key: https://tinyurl.com/yb8gxoct) \n
 *General (6)*
 `%echo`: Tests Denbot by echoing back.
 `%about`: Displays info about Denbot.
+`%stats`: Displays detailed statistics on Denbot.
 `%commands`: Displays Denbot's commands.
 `%uptime params:🌓format`: Displays Denbot's uptime.
     Example: %uptime hhmmss or %uptime
@@ -59,13 +106,13 @@ async def on_message(message):
 `%colour`: Fetches a random colour.
 `%age params:name`: Predicts age based on name.
     Example: %age Dhruv
-`%me`: Adds yourself to Denbot's database.
 `%sent params:sentence`: Perform sentiment analysis on a sentence.
-    Example: %sent good is bad or not""")
-
-    await message.author.send("""
+    Example: %sent good is bad or not
 
 *Data (5)*
+""")
+
+    await message.author.send("""
 `%time params:timezone`: Displays time for `timezone`.
     Example: %time Canada/Eastern or %time Canada/Mountain
 `%weather params:city`: Displays weather for `city`.
@@ -76,10 +123,6 @@ async def on_message(message):
     Example: %news CA or %news US
 `%loc params:city`: Displays lat and long for `city`.
     Example: %loc Toronto or %loc Chandler
-*Server (3)*
-`%count`: Returns member count.
-`%ls`: Lists all members.
-`%cls`: Lists all channels.
 
 *Tools and Utilities (6)*
 `%dict params:word`: Get the dictionary data on a word.
@@ -97,6 +140,7 @@ async def on_message(message):
     """)
 
     await message.channel.send(f"👋 {message.author.mention}! Check your DMs for a list of commands.")
+    time.sleep(5)
 
   if message.content.startswith('%uptime'):
     try:
@@ -110,36 +154,46 @@ async def on_message(message):
 
     if form == "verbose":
       await message.channel.send(f"{int(verbose[0])} hours, {int(verbose[1])} minutes, {int(verbose[2])} seconds")
+      time.sleep(5)
     elif form == "hhmmss":
       await message.channel.send(current_non)
+      time.sleep(5)
 
   if message.content.startswith('%time'):
     try:
       tz = message.content.lower().split(" ")[1]
       await message.channel.send(fetch_tz(tz))
+      time.sleep(5)
     except IndexError:
       await message.channel.send('Please provide a valid `timezone` parameter.')
+      time.sleep(5)
   
   if message.content.startswith('%weather'):
     try:
       loc = message.content.lower().split(" ")[1]
       await message.channel.send(f"Temperature: {round(fetch_weather(loc)[0], 2)}°C (Feels like {round(fetch_weather(loc)[1], 2)}°C) \nWeather: {fetch_weather(loc)[2].title()} \nHumidity: {fetch_weather(loc)[3]}")
+      time.sleep(5)
     except:
       await message.channel.send('Please provide a valid `city` parameter.')
+      time.sleep(5)
   
   if message.content.startswith('%weadet'):
     try:
       loc = message.content.lower().split(" ")[1]
       await message.channel.send(f"Visibility: {fetch_det_weather(loc)[0]} \nWind: {fetch_det_weather(loc)[1]}")
+      time.sleep(5)
     except:
       await message.channel.send('Please provide a valid `city` parameter.')
+      time.sleep(5)
   
   if message.content.startswith('%news'):
     loc = message.content.lower().split(" ")[1]
 
     await message.channel.send(f"**{fetch_news(loc)[1][0]} by *{fetch_news(loc)[0][0]}*** \n{fetch_news(loc)[2][0]} \n--- \nView full coverage here: {fetch_news(loc)[3][0]}")
+    time.sleep(5)
   
   if message.content.startswith('%loc'):
+
     loc = message.content.lower().split(" ")[1]
 
     latitude = fetch_loc(loc)[0]
@@ -151,6 +205,7 @@ async def on_message(message):
     else: direction_l = "°W"
 
     await message.channel.send(f"Latitude: {abs(latitude)}{direction} \nLongitude: {abs(longitude)}{direction_l}")
+    time.sleep(5)
   
   if message.content.startswith('%bored'):
     activity = fetch_activity()
@@ -160,27 +215,33 @@ Here's a {activity[1]} activity:
   `{activity[0]}`
 It requires {activity[2]} participant(s).
     """)
+    time.sleep(5)
 
   if message.content.startswith('%quote'):
     await message.channel.send(fetch_quote())
+    time.sleep(5)
 
   if message.content.startswith('%joke'):
     await message.channel.send(fetch_joke())
+    time.sleep(5)
 
   if message.content.startswith('%card'):
     card = fetch_card()
 
     await message.channel.send(f"{card[0].title()} of {card[1].title()}")
+    time.sleep(5)
 
   if message.content.startswith('%colour'):
     col = fetch_colour()
 
     await message.channel.send(f"`{col[1]}` ({col[0]})")
+    time.sleep(5)
   
   if message.content.startswith('%age'):
     age = fetch_age(message.content.split(" ")[1])
 
     await message.channel.send(age)
+    time.sleep(5)
   
   if message.content.startswith('%sent'):
     sentence = fetch_sent(message.content.split(" ", 1)[1])
@@ -192,6 +253,7 @@ It requires {activity[2]} participant(s).
       polarity = 1.0
 
     await message.channel.send(f"{abs(polarity*100)}% {result}")
+    time.sleep(5)
   
   if message.content.startswith('%dict'):
     word = message.content.lower().split(" ")[1]
@@ -203,67 +265,60 @@ It requires {activity[2]} participant(s).
 **{fetch[3]}**
 *{fetch[4]}*
     """)
+    time.sleep(5)
 
   if message.content.startswith('%eval'):
     expr = message.content.lower().split(" ")[1]
     
     await message.channel.send(fetch_mathjs(expr))
+    time.sleep(5)
   
   if message.content.startswith('%coin'):
     if randint(0, 1) == 0:
       await message.channel.send("Heads")
+      time.sleep(5)
     else:
       await message.channel.send("Tails")
+      time.sleep(5)
   
   if message.content.startswith('%rng'):
     start = message.content.lower().split(" ")[1]
     stop = message.content.lower().split(" ")[2]
     await message.channel.send(fetch_rng(start, stop))
+    time.sleep(5)
 
   if message.content.startswith('%dice'):
     roll = randint(1, 6)
     await message.channel.send(roll)
+    time.sleep(5)
 
   if message.content.startswith('%ghub'):
     await message.channel.send("https://github.com/drv-rajesh/Denbot")
+    time.sleep(5)
 
   if message.content.startswith('%server'):
     await message.channel.send("https://Denbot.drvrajesh.repl.co")
+    time.sleep(5)
 
   if message.content.startswith('%encode'):
     await message.channel.send(urllib.parse.quote(message.content.lower().split(" ")[1]))
+    time.sleep(5)
 
   if message.content.startswith('%sizeof'):
     await message.channel.send(str(sys.getsizeof(message.content.lower().split(" ")[1])) + " bytes")
+    time.sleep(5)
   
   if message.content.startswith("%bin"):
     converted = ''.join(format(i, 'b') for i in bytearray(message.content.lower().split(" ")[1], encoding ='utf-8')) 
     await message.channel.send(converted)
-  
-  if message.content.startswith("%me"):
-    db["User"] = str(message.author)
-    await message.channel.send(f"{message.author.mention}, you have been remembered forever.")
-
-  #--------------------------------------
-
-  if message.content.startswith("%count"):
-    await message.channel.send(message.guild.member_count)
-  
-  if message.content.startswith("%ls"):
-    for guild in client.guilds:
-      for member in guild.members:
-        await message.channel.send(member)
-  
-  if message.content.startswith("%cls"):
-    for guild in client.guilds:
-      for channel in guild.channels:
-        await message.channel.send(channel)
+    time.sleep(5)
   
   #---------------------------------------
 
   if message.content.startswith("%short"):
     url = message.content.lower().split(" ")[1]
     await message.channel.send(fetch_short(url))
+    time.sleep(5)
 
 keep()
 client.run(os.getenv('TOKEN'))
