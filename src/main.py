@@ -7,9 +7,11 @@ import sys
 import itertools
 import requests
 import pytz
+import math
 
 from keep import keep
 from random import randint
+from random import choice
 from replit import db
 from csv import reader, writer
 
@@ -17,7 +19,6 @@ from funcs import *
 
 #------------------------------------
 client = discord.Client()
-
 uptime = fetch_uptime()
 #------------------------------------
 
@@ -31,8 +32,30 @@ async def on_message(message):
 
   if message.author == client.user:
     return
+  
+  #---------------------------------------
+
+  if message.content.startswith('%rpg'):
+    embed = discord.Embed(title="Denbot's RPG", description="Embark on an adventure to save The Great Lands", color=0xff7f50)
+    embed.add_field(name="Start Game", value="Type %rstart to start a new game", inline=False)
+    embed.set_footer(text=f"At {datetime.datetime.now(pytz.timezone('Canada/Eastern')).strftime('%H:%M:%S')} | From @Denbot#1463")
+    embed.set_thumbnail(url="https://raw.githubusercontent.com/drv-rajesh/drv-rajesh/main/logo.png")
+    await message.channel.send(embed = embed)
+    time.sleep(5)
+
+  if message.content.startswith('%rstart'):
+    await message.channel.send(play_rpg())
 
   #---------------------------------------
+
+  if "is denbot alive" in message.content.lower():
+    if str(requests.get("https://Denbot.drvrajesh.repl.co")) == "<Response [200]>":
+      await message.channel.send("My server is up, therefore I am alive.")
+      time.sleep(5)
+  
+  if "thanks denbot" in message.content.lower():
+    await message.channel.send("You're welcome :)") 
+    time.sleep(5)
 
   if "hi denbot" in message.content.lower():
     x = randint(0, 1)
@@ -43,10 +66,6 @@ async def on_message(message):
     elif x == 1:
       await message.channel.send(f"Hi {message.author.mention}!")
       time.sleep(5)
-  
-  if "denbot" in message.content.lower() and "hi denbot" not in message.content.lower():
-    await message.channel.send("I was mentioned. Is there anything I can help you with?")
-    time.sleep(5)
 
   #---------------------------------------
   #Commands
@@ -82,65 +101,7 @@ async def on_message(message):
 
   if message.content.startswith('%commands'):
 
-    await message.author.send("""
-**31 Currently Implemented Commands** (Emoji Key: https://tinyurl.com/yb8gxoct) \n
-*General (6)*
-`%echo`: Tests Denbot by echoing back.
-`%about`: Displays info about Denbot.
-`%stats`: Displays detailed statistics on Denbot.
-`%commands`: Displays Denbot's commands.
-`%uptime params:🌓format`: Displays Denbot's uptime.
-    Example: %uptime hhmmss or %uptime
-`%ghub`: Displays Denbot's GitHub repository. ❗
-`%server`: Displays the server Denbot is running on. ❗
-
-*Leisure (11)*
-`%bored`: Finds an activity for you to do.
-`%quote`: Fetches a random inspirational quote.
-`%joke`: Fetches a random dad joke.
-`%coin`: Flips a coin.
-`%dice`: Rolls a die.
-`%rng params:start,stop`: Gets a random number between `start` and `stop`, inclusive.
-    Example: %rng 1 10 or %rng 13323 2893282
-`%card`: Draws a card from a shuffled deck.
-`%colour`: Fetches a random colour.
-`%age params:name`: Predicts age based on name.
-    Example: %age Dhruv
-`%sent params:sentence`: Perform sentiment analysis on a sentence.
-    Example: %sent good is bad or not
-
-*Data (5)*
-""")
-
-    await message.author.send("""
-`%time params:timezone`: Displays time for `timezone`.
-    Example: %time Canada/Eastern or %time Canada/Mountain
-`%weather params:city`: Displays weather for `city`.
-    Example: %weather Toronto or %weather Chandler
-`%weadet params:city`: Displays detailed weather for `city`.
-    Example: %weadet Toronto or %weadet Chandler
-`%news params:country`: Displays top headline for `country`.
-    Example: %news CA or %news US
-`%loc params:city`: Displays lat and long for `city`.
-    Example: %loc Toronto or %loc Chandler
-
-*Tools and Utilities (6)*
-`%dict params:word`: Get the dictionary data on a word.
-    Example: %dict hello or %dict why
-`%short params:url`: Shortens a URL.
-    Example: %short https://google.ca
-`%eval params:expression`: Solve an expression. 🔨
-    Example: %eval 2+3
-`%encode params:string`: Encodes `string` in URL UTF-8 format.
-    Example: %encode 25sjf
-`%sizeof params:var`: Shows an object's memory consumption.
-    Example: %sizeof 5 or %sizeof efjisf
-`%bin params:string`: Converts an object to binary.
-    Example: %bin hello or %bin 510
-    """)
-
-    await message.channel.send(f"👋 {message.author.mention}! Check your DMs for a list of commands.")
-    time.sleep(5)
+    await message.channel.send("https://github.com/drv-rajesh/Denbot/wiki/Commands")
 
   if message.content.startswith('%uptime'):
     try:
@@ -207,6 +168,43 @@ async def on_message(message):
     await message.channel.send(f"Latitude: {abs(latitude)}{direction} \nLongitude: {abs(longitude)}{direction_l}")
     time.sleep(5)
   
+  if message.content.startswith('%rps'):
+
+    pmove = message.content.lower().split(" ")[1]
+    move = choice(['rock', 'paper', 'scissors'])
+
+    if move == "rock":
+      if pmove == "paper":
+        await message.channel.send("You chose paper, I chose rock. You win")
+        time.sleep(5)
+        with open("users.txt","a") as file:
+	        file.write(str(message.author) + "\n")
+      elif pmove == "scissors":
+        await message.channel.send("You chose scissors, I chose rock. I win :)")
+        time.sleep(5)
+    elif move == "scissors":
+      if pmove == "rock":
+        await message.channel.send("You chose rock, I chose scissors. You win")
+        time.sleep(5)
+        with open("users.txt","a") as file:
+	        file.write(str(message.author) + "\n")
+      elif pmove == "paper":
+        await message.channel.send("You chose paper, I chose scissors. I win :)")
+        time.sleep(5)
+    elif move == "paper":
+      if pmove == "scissors":
+        await message.channel.send("You chose scissors, I chose paper. You win")
+        time.sleep(5)
+        with open("users.txt","a") as file:
+	        file.write(str(message.author) + "\n")
+      elif pmove == "rock":
+        await message.channel.send("You chose rock, I chose paper. I win :)")
+        time.sleep(5)
+
+    if move == pmove:
+      await message.channel.send("It's tied buddy :)")
+      time.sleep(5)
+
   if message.content.startswith('%bored'):
     activity = fetch_activity()
 
