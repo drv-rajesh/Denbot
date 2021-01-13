@@ -11,6 +11,15 @@ from random import randint
 def fetch_uptime():
   return time.time()
 
+#------
+
+def play_rpg():
+  intro = "It's a dark and stormy night. You are in a dark room, and unbeknownst to you, a threat lurks all around the place you are in - in fact it binds all living things in silence. You ponder upon the possibilities of what could have led you here, only to realize that you can't think due to a throbbing sound inside your head. Where do you go (N, S, E, or W)?"
+
+  return intro
+
+#------
+
 def fetch_activity():
   activity = requests.get("https://www.boredapi.com/api/activity").json()
 
@@ -123,8 +132,10 @@ def fetch_loc(city):
   fetch = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={os.getenv('WEAKEY')}"
   fetch = requests.get(fetch).json()
 
-  lat = fetch["coord"]["lat"]
-  long = fetch["coord"]["lon"]
+  lat = round(fetch["coord"]["lat"], 2)
+  long = round(fetch["coord"]["lon"], 2)
+
+  return lat, long
 
 def fetch_short(url):
   fetch = requests.post("https://cleanuri.com/api/v1/shorten", data={"url": url}).json()
