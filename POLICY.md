@@ -9,3 +9,6 @@
 
 <h3> Data Security </h3>
 <p> Due to this bot running on a tight budget, the database used to store user data is publicly available, however no discernable features are visible to the public. The database itself is invulnerable to attacks and is guaranteed secure. </p>
+
+<h3> Contact Us </h3>
+<p> Reach out to Dhruv Rajesh on his <a href="https://twitter.com/DhruvDev98"> Twitter </a> account and he will do his best to get back to you as soon as possible.
