@@ -18,7 +18,9 @@ from csv import reader, writer
 from funcs import *
 
 #------------------------------------
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
 uptime = fetch_uptime()
 #------------------------------------
 
@@ -26,6 +28,29 @@ uptime = fetch_uptime()
 async def on_ready():
   print('Logged in as {0.user}'.format(client))
   await client.change_presence(activity=discord.Game(name='denbot.gg'))
+
+@client.event
+async def on_member_join(member):
+  for channel in member.guild.channels:
+    if str(channel) == "sysmessages":
+      await channel.send(f"Welcome to Dhruv's Den {member.mention}!")
+
+@client.event
+async def on_member_remove(member):
+  for channel in member.guild.channels:
+    if str(channel) == "sysmessages":
+      await channel.send(f"{member.mention} has left.")
+
+@client.event
+async def on_message_delete(message):
+  embed = discord.Embed(title="Deleted Message", description=f"Message deleted by {message.author}", color=0xff7f50)
+  embed.add_field(name="Message", value=message.content, inline=False)
+  embed.set_footer(text=f"At {datetime.datetime.now(pytz.timezone('Canada/Eastern')).strftime('%H:%M:%S')} | From @Denbot#1463")
+  embed.set_thumbnail(url="https://raw.githubusercontent.com/drv-rajesh/drv-rajesh/main/logo.png")
+  await message.channel.send(embed = embed)
+
+
+#-----------------------------------
 
 @client.event
 async def on_message(message):
