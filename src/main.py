@@ -10,24 +10,20 @@ import pytz
 import math
 
 from keep import keep
-from random import randint
-from random import choice
-from replit import db
-from csv import reader, writer
+from random import randint, choice
 
 from funcs import *
 
-#------------------------------------
 intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
+
 uptime = fetch_uptime()
-#------------------------------------
 
 @client.event
 async def on_ready():
   print('Logged in as {0.user}'.format(client))
-  await client.change_presence(activity=discord.Game(name='denbot.gg'))
+  await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="instructions"))
 
 @client.event
 async def on_member_join(member):
@@ -49,16 +45,30 @@ async def on_message_delete(message):
   embed.set_thumbnail(url="https://raw.githubusercontent.com/drv-rajesh/drv-rajesh/main/logo.png")
   await message.channel.send(embed = embed)
 
-
-#-----------------------------------
-
 @client.event
 async def on_message(message):
 
   if message.author == client.user:
     return
-  
-  #---------------------------------------
+
+  if message.content.startswith('%graph'):
+    try:
+      chart = message.content.lower().split(" ")[1]
+      data = message.content.lower().split(" ")[2]
+    except:
+      embed = discord.Embed(title="Charts", description=f"Available Chart Types", color=0xff7f50)
+      embed.add_field(name="Types", value="%graph [bar, horbar, line, sparkline, scatter, pie, doughnut, polar, bubble]", inline=False)
+      embed.set_footer(text=f"At {datetime.datetime.now(pytz.timezone('Canada/Eastern')).strftime('%H:%M:%S')} | From @Denbot#1463")
+      embed.set_thumbnail(url="https://raw.githubusercontent.com/drv-rajesh/drv-rajesh/main/logo.png")
+      await message.channel.send(embed = embed)
+
+    values = {"bar":"bvg", "horbar":"hvg", "line":"lc", "sparkline":"ls", "scatter":"lxy", "pie":"p", "doughnut":"pd", "polar":"pa", "bubble":"bb"}
+
+    for val in values.keys():
+      if str(chart) == val:
+        chart = values[val]
+
+    await message.channel.send(fetch_graph(chart, data))
 
   if message.content.startswith('%rpg'):
     embed = discord.Embed(title="Denbot's RPG", description="Embark on an adventure to save The Great Lands", color=0xff7f50)
@@ -70,8 +80,6 @@ async def on_message(message):
 
   if message.content.startswith('%rstart'):
     await message.channel.send(play_rpg())
-
-  #---------------------------------------
 
   if "is denbot alive" in message.content.lower():
     if str(requests.get("https://Denbot.drvrajesh.repl.co")) == "<Response [200]>":
@@ -92,8 +100,6 @@ async def on_message(message):
       await message.channel.send(f"Hi {message.author.mention}!")
       time.sleep(5)
 
-  #---------------------------------------
-  #Commands
   if message.content.startswith('%echo'):
     await message.channel.send('Echoing back.')
     time.sleep(5)
@@ -202,8 +208,6 @@ async def on_message(message):
       if pmove == "paper":
         await message.channel.send("You chose paper, I chose rock. You win")
         time.sleep(5)
-        with open("users.txt","a") as file:
-	        file.write(str(message.author) + "\n")
       elif pmove == "scissors":
         await message.channel.send("You chose scissors, I chose rock. I win :)")
         time.sleep(5)
@@ -211,8 +215,6 @@ async def on_message(message):
       if pmove == "rock":
         await message.channel.send("You chose rock, I chose scissors. You win")
         time.sleep(5)
-        with open("users.txt","a") as file:
-	        file.write(str(message.author) + "\n")
       elif pmove == "paper":
         await message.channel.send("You chose paper, I chose scissors. I win :)")
         time.sleep(5)
@@ -220,8 +222,6 @@ async def on_message(message):
       if pmove == "scissors":
         await message.channel.send("You chose scissors, I chose paper. You win")
         time.sleep(5)
-        with open("users.txt","a") as file:
-	        file.write(str(message.author) + "\n")
       elif pmove == "rock":
         await message.channel.send("You chose rock, I chose paper. I win :)")
         time.sleep(5)
@@ -335,13 +335,33 @@ It requires {activity[2]} participant(s).
     converted = ''.join(format(i, 'b') for i in bytearray(message.content.lower().split(" ")[1], encoding ='utf-8')) 
     await message.channel.send(converted)
     time.sleep(5)
-  
-  #---------------------------------------
 
   if message.content.startswith("%short"):
     url = message.content.lower().split(" ")[1]
     await message.channel.send(fetch_short(url))
     time.sleep(5)
+
+  if message.content.startswith("%gd"):
+    profile = message.content.lower().split(" ")[1]
+    data = fetch_gd(profile)
+
+    embed = discord.Embed(title=data["username"], description=f"Player {data['playerID']}", color=0xff7f50)
+    embed.add_field(name="Stars", value=data["stars"], inline=True)
+    embed.add_field(name="Diamonds", value=data["diamonds"], inline=True)
+    embed.add_field(name="Coins", value=data["coins"], inline=True)
+    embed.add_field(name="User Coins", value=data["userCoins"], inline=True)
+    embed.add_field(name="Demons", value=data["demons"], inline=True)
+    embed.add_field(name="Creator Points", value=data["cp"], inline=True)
+    embed.set_footer(text=f"At {datetime.datetime.now(pytz.timezone('Canada/Eastern')).strftime('%H:%M:%S')} | From @Denbot#1463")
+    embed.set_thumbnail(url="https://raw.githubusercontent.com/drv-rajesh/drv-rajesh/main/logo.png")
+    await message.channel.send(embed = embed)
+    time.sleep(5)
+  
+  if message.content.startswith("%lyrics"):
+    artist = message.content.lower().split(" ")[1]
+    title = message.content.lower().split(" ")[2]
+
+    await message.channel.send(f"{fetch_lyrics(artist, title)}...")
 
 keep()
 client.run(os.getenv('TOKEN'))
