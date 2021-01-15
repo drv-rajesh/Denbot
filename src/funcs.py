@@ -8,6 +8,13 @@ import urllib.parse
 
 from random import randint
 
+try:
+  from ImageCharts import ImageCharts
+except:
+  from os import system
+  system('pip install image-charts')
+  from ImageCharts import ImageCharts
+
 def fetch_uptime():
   return time.time()
 
@@ -141,3 +148,19 @@ def fetch_short(url):
   fetch = requests.post("https://cleanuri.com/api/v1/shorten", data={"url": url}).json()
 
   return fetch['result_url']
+
+def fetch_graph(chart, data):
+  final = ImageCharts().cht(chart).chd(f"t:{data}").chs('100x100')
+
+  return final.to_url()
+
+def fetch_gd(profile):
+
+  return requests.get(f"https://gdbrowser.com/api/profile/{profile}").json()
+
+def fetch_lyrics(artist, song):
+
+  lyrics = requests.get(f"https://api.lyrics.ovh/v1/{artist}/{song}").json()["lyrics"]
+
+  return str(lyrics)[:200]
+
