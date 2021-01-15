@@ -14,3 +14,4 @@
 | Funcs      | My own module that houses API calls.                                |
 | JSON       | To load data from APIs in a JSON format.                            |
 | Pytz       | For timezone related situations.                                    |
+| Image-charts | For generating graphs.                                            |
