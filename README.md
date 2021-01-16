@@ -4,9 +4,9 @@ Denbot is an all-purpose Discord bot serving functionality in IOT, multipurpose 
 Following you will find all the resources you need to get Denbot up and running in your Discord server, as well as a guide to contributing to this project. Happy Denbotting!
 
 ### Table of Contents
-- Bringing Denbot to Life
-- Resources
-- Contributing
+- [Bringing Denbot to Life](#bringing-denbot-to-life)
+- [Resources](#resources)
+- [Contributing](#contributing)
 
 ### Bringing Denbot to Life
 The Denbot [documentation](https://github.com/drv-rajesh/Denbot/wiki) provides a detailed step-by-step guide on installing Denbot through the cloud-based IDE 'Repl.it'. Unfortunately, obtaining the direct link to invite Denbot to your server is prohibited due to rate limiting on the APIs which tokens are present in the `.env` file.
